@@ -217,7 +217,7 @@
 
   spinBtn.addEventListener('click', spin);
   hubBtn.addEventListener('click', spin);
-  document.getElementById('player-input').addEventListener('keydown', e => { if (e.key === 'Enter') spin(); });
+  document.getElementById('player-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.isComposing) spin(); });
 
   function setBusy(b) {
     const ok = items.length >= 2;
