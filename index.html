@@ -116,7 +116,7 @@
 
   <section class="panel">
     <h1>돌림판 🎡</h1>
-    <p class="sub">항목을 추가하면 판이 바로 바뀌어요. (2개부터 돌릴 수 있어요)</p>
+    <p class="sub">같은 이름은 <b>하루에 한 가지 결과</b>만 나와요 — 다시 돌려도 소용없음! 🔒</p>
 
     <div class="item-list" id="item-list"></div>
     <div class="input-row">
@@ -125,7 +125,10 @@
     </div>
     <div class="count" id="count"></div>
 
-    <div class="result" id="result"><span class="hint">돌림판을 돌려보세요</span></div>
+    <div class="input-row" style="margin-top:14px">
+      <input id="player-input" type="text" placeholder="돌리는 사람 이름 (필수)" maxlength="12">
+    </div>
+    <div class="result" id="result"><span class="hint">이름을 넣고 돌려보세요</span></div>
     <div class="row">
       <button class="btn btn-spin" id="spin-btn">돌리기</button>
       <button class="btn btn-remove" id="remove-btn" disabled>당첨 빼기</button>
@@ -244,8 +247,26 @@
     return Math.floor(rel / seg) % n;
   }
 
+  // 문자열 → 32bit 해시 (FNV-1a). 이름+날짜+항목구성이 같으면 언제나 같은 값
+  function fnv1a(str) {
+    let h = 0x811c9dc5;
+    for (let i = 0; i < str.length; i++) {
+      h ^= str.charCodeAt(i);
+      h = Math.imul(h, 0x01000193) >>> 0;
+    }
+    return h >>> 0;
+  }
+
   function spin() {
     if (spinning || items.length < 2) return;
+    const playerEl = document.getElementById('player-input');
+    const player = playerEl.value.trim().replace(/\s+/g, '').toLowerCase();
+    if (!player) {
+      playerEl.focus();
+      resultEl.className = 'result';
+      resultEl.innerHTML = '<span class="hint">먼저 돌리는 사람 이름을 넣어주세요!</span>';
+      return;
+    }
     spinning = true;
     lastWinner = null;
     removeBtn.disabled = true;
@@ -253,10 +274,20 @@
     resultEl.className = 'result';
     resultEl.innerHTML = '<span class="hint">두구두구두구…</span>';
 
-    const turns = 5 + Math.random() * 3;
-    const target = angle + turns * Math.PI * 2 + Math.random() * Math.PI * 2;
+    // 오늘 날짜 + 이름 + 항목 구성으로 승자가 결정됨 (재돌림 무의미)
+    const today = new Date().toISOString().slice(0, 10);
+    const seed = fnv1a(player + '|' + today + '|' + items.join('|'));
+    const n = items.length;
+    const winIdx = seed % n;
+    const seg = (Math.PI * 2) / n;
+    const frac = 0.18 + (seed % 1000) / 1000 * 0.64;      // 칸 안 착지 위치도 결정적
+    const relTarget = winIdx * seg + frac * seg;
+
     const start = angle;
-    const dur = 4200 + Math.random() * 800;
+    const fullTurns = 6 * Math.PI * 2;
+    let delta = ((-relTarget - start) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+    const target = start + fullTurns + delta;
+    const dur = 4200 + (seed % 700);
     const t0 = performance.now();
 
     function frame(t) {
@@ -271,7 +302,8 @@
         const idx = winnerAt(angle);
         lastWinner = idx;
         resultEl.className = 'result win';
-        resultEl.innerHTML = `<div><div class="who">🎉 ${escapeHtml(items[idx])}</div></div>`;
+        resultEl.innerHTML = `<div><div class="who">🎉 ${escapeHtml(playerEl.value.trim())} → ${escapeHtml(items[idx])}</div>
+          <div class="hint">오늘은 몇 번을 돌려도 같은 결과예요</div></div>`;
         spinBtn.disabled = false; hubBtn.disabled = false;
         removeBtn.disabled = false;
       }
