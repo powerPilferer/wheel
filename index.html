@@ -94,10 +94,14 @@
 (function () {
   // ── 결과 공유 링크(#r=...)로 열리면: 결과 카드만 보여주는 모드
   (function resultMode() {
-    const m = location.hash.match(/^#r=(.+)/);
+    const m = location.search.match(/[?&]r=([^&]+)/) || location.hash.match(/^#r=(.+)/);
     if (!m) return;
     let d;
-    try { d = JSON.parse(decodeURIComponent(escape(atob(decodeURIComponent(m[1]))))); } catch (e) { return; }
+    try {
+      let b = decodeURIComponent(m[1]).replace(/-/g, '+').replace(/_/g, '/');
+      while (b.length % 4) b += '=';
+      d = JSON.parse(decodeURIComponent(escape(atob(b))));
+    } catch (e) { return; }
     if (!d || !d.n || !d.r) return;
     const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
     document.querySelector('.wheel-wrap').style.display = 'none';
@@ -237,14 +241,14 @@
         <button type="button" class="share-mini" id="share-btn">결과 공유하기 📤</button></div>`;
       document.getElementById('share-btn').addEventListener('click', () => {
         const today = new Date().toISOString().slice(0, 10);
-        const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ n: winName, r: winResult, d: today }))));
-        const url = location.origin + location.pathname + '#r=' + encodeURIComponent(payload);
-        const text = `🎡 돌림판 결과: ${winName} → ${winResult}`;
+        const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ n: winName, r: winResult, d: today }))))
+          .replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');   // base64url — 순수 영문·숫자만
+        const url = location.origin + location.pathname + '?r=' + payload;
         if (navigator.share) {
-          navigator.share({ title: '돌림판 결과', text, url }).catch(() => {});
+          navigator.share({ title: '돌림판 결과', text: `🎡 ${winName} → ${winResult}`, url }).catch(() => {});
         } else {
-          navigator.clipboard.writeText(text + '\n' + url).then(() => {
-            document.getElementById('share-btn').textContent = '링크 복사됨 ✅';
+          navigator.clipboard.writeText(url).then(() => {
+            document.getElementById('share-btn').textContent = '링크 복사됨 ✅ (붙여넣기 하세요)';
           }).catch(() => {});
         }
       });
