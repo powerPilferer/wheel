@@ -182,7 +182,12 @@
       const fs = Math.min(44, Math.max(16, Math.min(340 / Math.max(label.length, 4), 300 * segFrac * items.length / 2)));
       ctx.font = `800 ${fs}px Pretendard, "Apple SD Gothic Neo", sans-serif`;
       ctx.shadowColor = 'rgba(0,0,0,.25)'; ctx.shadowBlur = 6;
-      ctx.fillText(label, R - 34, 0);
+      const pct = Math.round(segFrac * 100) + '%';
+      ctx.fillText(label, R - 34, -fs * 0.36);
+      ctx.font = `700 ${Math.max(13, fs * 0.58)}px Pretendard, "Apple SD Gothic Neo", sans-serif`;
+      ctx.globalAlpha = 0.82;
+      ctx.fillText(pct, R - 34, fs * 0.52);
+      ctx.globalAlpha = 1;
       ctx.restore();
     }
     ctx.beginPath(); ctx.arc(CX, CY, R + 6, 0, Math.PI * 2);
