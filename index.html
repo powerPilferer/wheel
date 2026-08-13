@@ -17,7 +17,6 @@
   }
   .app { display: flex; gap: 34px; align-items: center; flex-wrap: wrap; justify-content: center; }
 
-  /* ── 돌림판 */
   .wheel-wrap { position: relative; width: min(520px, 88vw); aspect-ratio: 1; }
   canvas { width: 100%; height: 100%; display: block; }
   .pointer {
@@ -40,67 +39,46 @@
     0%, 100% { transform: translateY(0) rotate(0deg); }
     50% { transform: translateY(4px) rotate(-8deg) scale(.92); }
   }
-  .hub:hover { transform: translate(-50%,-50%) scale(1.07); box-shadow: 0 12px 28px rgba(49,130,246,.55), inset 0 2px 4px rgba(255,255,255,.5), inset 0 -5px 10px rgba(0,0,0,.18); }
-  .hub:active { transform: translate(-50%,-50%) scale(.95); box-shadow: 0 4px 12px rgba(49,130,246,.4), inset 0 3px 8px rgba(0,0,0,.25); }
+  .hub:hover { transform: translate(-50%,-50%) scale(1.07); }
+  .hub:active { transform: translate(-50%,-50%) scale(.95); }
   .hub:disabled { filter: grayscale(.6); opacity: .75; cursor: default; }
   .hub:disabled .finger { animation: none; }
 
-  /* ── 패널 */
   .panel { width: min(360px, 88vw); background: var(--card); border-radius: 24px; padding: 26px; box-shadow: 0 10px 34px rgba(0,0,0,.08); }
   h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: -.02em; }
-  .sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; }
+  .sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.5; }
 
-  /* 항목 리스트 (입력란 위로 쌓임) */
-  .item-list { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; max-height: 300px; overflow-y: auto; }
-  .item-row {
-    display: flex; align-items: center; gap: 10px; padding: 10px 12px;
-    background: var(--bg); border-radius: 12px; animation: slidein .18s ease;
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
+    background: var(--bg); border-radius: 999px; font-size: 13px; font-weight: 600;
   }
-  @keyframes slidein { from { opacity: 0; transform: translateY(-5px); } }
-  .item-row .dot { width: 12px; height: 12px; border-radius: 4px; flex-shrink: 0; }
-  .item-row .name { flex: 1; font-size: 14.5px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .item-row .del {
-    flex-shrink: 0; width: 22px; height: 22px; border: 0; border-radius: 50%;
-    background: rgba(0,0,0,.08); color: var(--muted); font-size: 11px; line-height: 1;
-    cursor: pointer; display: grid; place-items: center; transition: background .12s, color .12s;
-  }
-  .item-row .del:hover { background: #ff6b6b; color: #fff; }
-  .empty-note { padding: 14px; border: 1.5px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 13px; text-align: center; margin-bottom: 12px; }
+  .chip .dot { width: 9px; height: 9px; border-radius: 50%; }
 
-  /* 입력줄 */
   .input-row { display: flex; gap: 8px; }
   .input-row input {
     flex: 1; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px;
     font: inherit; font-size: 14.5px; outline: none; transition: border-color .15s; min-width: 0;
   }
   .input-row input:focus { border-color: var(--accent); }
-  .btn-add {
-    flex-shrink: 0; padding: 12px 18px; border: 0; border-radius: 12px;
-    background: var(--text); color: #fff; font-weight: 800; font-size: 14px; cursor: pointer;
-    transition: transform .1s ease, opacity .15s;
-  }
-  .btn-add:active { transform: scale(.96); }
-  .count { margin-top: 8px; font-size: 12.5px; color: var(--muted); }
 
   .result {
-    margin-top: 16px; padding: 16px; border-radius: 16px; background: var(--bg);
+    margin-top: 14px; padding: 16px; border-radius: 16px; background: var(--bg);
     text-align: center; min-height: 62px; display: grid; place-items: center;
   }
-  .result .who { font-size: 24px; font-weight: 800; letter-spacing: -.02em; }
+  .result .who { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
   .result .hint { color: var(--muted); font-size: 13px; }
   .result.win { background: #fff7e0; animation: pop .35s ease; }
   @keyframes pop { 0% { transform: scale(.92); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
 
-  .row { display: flex; gap: 8px; margin-top: 14px; }
   .btn {
-    flex: 1; padding: 13px; border: 0; border-radius: 13px; font-weight: 800; font-size: 15px;
-    cursor: pointer; transition: transform .1s ease, opacity .15s;
+    width: 100%; margin-top: 14px; padding: 14px; border: 0; border-radius: 13px;
+    font-weight: 800; font-size: 15px; cursor: pointer; background: var(--accent); color: #fff;
+    transition: transform .1s ease, opacity .15s;
   }
   .btn:active { transform: scale(.97); }
-  .btn-spin { background: var(--accent); color: #fff; }
-  .btn-spin:disabled { opacity: .45; cursor: default; }
-  .btn-remove { background: var(--bg); color: var(--text); font-size: 13px; flex: 0 0 auto; padding: 13px 15px; }
-  .btn-remove:disabled { opacity: .4; cursor: default; }
+  .btn:disabled { opacity: .45; cursor: default; }
+  .foot { margin-top: 12px; font-size: 11.5px; color: var(--muted); text-align: center; }
 </style>
 </head>
 <body>
@@ -117,39 +95,25 @@
   <section class="panel">
     <h1>돌림판 🎡</h1>
     <p class="sub">같은 이름은 <b>하루에 한 가지 결과</b>만 나와요 — 다시 돌려도 소용없음! 🔒</p>
-
-    <div class="item-list" id="item-list"></div>
+    <div class="chips" id="chips"></div>
     <div class="input-row">
-      <input id="item-input" type="text" placeholder="항목 이름 입력" maxlength="20">
-      <button class="btn-add" id="add-btn">추가</button>
-    </div>
-    <div class="count" id="count"></div>
-
-    <div class="input-row" style="margin-top:14px">
-      <input id="player-input" type="text" placeholder="돌리는 사람 이름 (필수)" maxlength="12">
+      <input id="player-input" type="text" placeholder="이름을 입력하세요 (필수)" maxlength="12">
     </div>
     <div class="result" id="result"><span class="hint">이름을 넣고 돌려보세요</span></div>
-    <div class="row">
-      <button class="btn btn-spin" id="spin-btn">돌리기</button>
-      <button class="btn btn-remove" id="remove-btn" disabled>당첨 빼기</button>
-    </div>
+    <button class="btn" id="spin-btn">돌리기</button>
+    <div class="foot">항목은 주최자만 바꿀 수 있어요</div>
   </section>
 </main>
 
 <script>
 (function () {
-  const KEY = 'wheel-items-v2';
-  const OLD_KEY = 'wheel-items';
+  const ITEMS_URL = 'https://raw.githubusercontent.com/powerPilferer/wheel/main/items.json';
   const canvas = document.getElementById('wheel');
   const ctx = canvas.getContext('2d');
-  const listEl = document.getElementById('item-list');
-  const inputEl = document.getElementById('item-input');
-  const addBtn = document.getElementById('add-btn');
-  const countEl = document.getElementById('count');
+  const chipsEl = document.getElementById('chips');
   const resultEl = document.getElementById('result');
   const spinBtn = document.getElementById('spin-btn');
   const hubBtn = document.getElementById('spin-hub');
-  const removeBtn = document.getElementById('remove-btn');
 
   const PALETTE = ['#3182f6','#ff6b6b','#20c997','#f2a33c','#845ef7','#f06595',
                    '#15aabf','#94d82d','#ff922b','#5c7cfa','#e64980','#38d9a9'];
@@ -158,48 +122,19 @@
   let items = [];
   let angle = 0;
   let spinning = false;
-  let lastWinner = null;
 
   function colorOf(i, n) {
     if (n > 1 && i === n - 1 && i % PALETTE.length === 0) return PALETTE[1];
     return PALETTE[i % PALETTE.length];
   }
 
-  function save() { localStorage.setItem(KEY, JSON.stringify(items)); }
-
-  function renderList() {
-    if (!items.length) {
-      listEl.innerHTML = '';
-      listEl.insertAdjacentHTML('beforebegin', '');
-      listEl.innerHTML = '<div class="empty-note">아래 입력란에서 항목을 추가해보세요</div>';
-    } else {
-      listEl.innerHTML = items.map((name, i) => `
-        <div class="item-row">
-          <span class="dot" style="background:${colorOf(i, items.length)}"></span>
-          <span class="name">${escapeHtml(name)}</span>
-          <button type="button" class="del" data-i="${i}" title="삭제">✕</button>
-        </div>`).join('');
-      listEl.querySelectorAll('.del').forEach(b => b.addEventListener('click', () => {
-        items.splice(Number(b.dataset.i), 1);
-        lastWinner = null; removeBtn.disabled = true;
-        update();
-      }));
-    }
-    countEl.textContent = items.length ? `${items.length}개 항목` : '';
+  function renderChips() {
+    chipsEl.innerHTML = items.map((name, i) =>
+      `<span class="chip"><span class="dot" style="background:${colorOf(i, items.length)}"></span>${escapeHtml(name)}</span>`
+    ).join('');
     const ok = items.length >= 2;
     spinBtn.disabled = !ok || spinning;
     hubBtn.disabled = !ok || spinning;
-  }
-
-  function update() { save(); renderList(); draw(); }
-
-  function addItem() {
-    const name = inputEl.value.trim();
-    if (!name) { inputEl.focus(); return; }
-    items.push(name);
-    inputEl.value = '';
-    inputEl.focus();
-    update();
   }
 
   function draw() {
@@ -247,7 +182,6 @@
     return Math.floor(rel / seg) % n;
   }
 
-  // 문자열 → 32bit 해시 (FNV-1a). 이름+날짜+항목구성이 같으면 언제나 같은 값
   function fnv1a(str) {
     let h = 0x811c9dc5;
     for (let i = 0; i < str.length; i++) {
@@ -264,23 +198,20 @@
     if (!player) {
       playerEl.focus();
       resultEl.className = 'result';
-      resultEl.innerHTML = '<span class="hint">먼저 돌리는 사람 이름을 넣어주세요!</span>';
+      resultEl.innerHTML = '<span class="hint">먼저 이름을 넣어주세요!</span>';
       return;
     }
     spinning = true;
-    lastWinner = null;
-    removeBtn.disabled = true;
     spinBtn.disabled = true; hubBtn.disabled = true;
     resultEl.className = 'result';
     resultEl.innerHTML = '<span class="hint">두구두구두구…</span>';
 
-    // 오늘 날짜 + 이름 + 항목 구성으로 승자가 결정됨 (재돌림 무의미)
     const today = new Date().toISOString().slice(0, 10);
     const seed = fnv1a(player + '|' + today + '|' + items.join('|'));
     const n = items.length;
     const winIdx = seed % n;
     const seg = (Math.PI * 2) / n;
-    const frac = 0.18 + (seed % 1000) / 1000 * 0.64;      // 칸 안 착지 위치도 결정적
+    const frac = 0.18 + (seed % 1000) / 1000 * 0.64;
     const relTarget = winIdx * seg + frac * seg;
 
     const start = angle;
@@ -300,47 +231,31 @@
       } else {
         spinning = false;
         const idx = winnerAt(angle);
-        lastWinner = idx;
         resultEl.className = 'result win';
         resultEl.innerHTML = `<div><div class="who">🎉 ${escapeHtml(playerEl.value.trim())} → ${escapeHtml(items[idx])}</div>
           <div class="hint">오늘은 몇 번을 돌려도 같은 결과예요</div></div>`;
         spinBtn.disabled = false; hubBtn.disabled = false;
-        removeBtn.disabled = false;
       }
     }
     requestAnimationFrame(frame);
-  }
-
-  function removeWinner() {
-    if (lastWinner === null) return;
-    items.splice(lastWinner, 1);
-    lastWinner = null;
-    removeBtn.disabled = true;
-    resultEl.className = 'result';
-    resultEl.innerHTML = '<span class="hint">당첨 항목을 뺐어요. 다시 돌려보세요!</span>';
-    update();
   }
 
   function escapeHtml(s) {
     return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   }
 
-  addBtn.addEventListener('click', addItem);
-  inputEl.addEventListener('keydown', e => { if (e.key === 'Enter') addItem(); });
   spinBtn.addEventListener('click', spin);
   hubBtn.addEventListener('click', spin);
-  removeBtn.addEventListener('click', removeWinner);
+  document.getElementById('player-input').addEventListener('keydown', e => { if (e.key === 'Enter') spin(); });
 
-  // 저장 복원 — 구버전(텍스트) 기록도 이관
-  try {
-    items = JSON.parse(localStorage.getItem(KEY)) || [];
-  } catch (e) { items = []; }
-  if (!items.length) {
-    const old = localStorage.getItem(OLD_KEY);
-    if (old) items = old.split('\n').map(s => s.trim()).filter(Boolean);
-  }
-  if (!items.length) items = ['쭈꾸미', '돈까스', '평양냉면', '닭곰탕'];
-  update();
+  // 항목은 관리자가 저장한 items.json에서 (캐시 무효화 파라미터로 항상 최신)
+  fetch(ITEMS_URL + '?t=' + Date.now())
+    .then(r => r.json())
+    .then(d => { items = (d.items || []).filter(Boolean); renderChips(); draw(); })
+    .catch(() => {
+      resultEl.innerHTML = '<span class="hint">항목을 불러오지 못했어요. 새로고침 해보세요.</span>';
+    });
+  draw();
 })();
 </script>
 </body>
