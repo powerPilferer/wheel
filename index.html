@@ -5,71 +5,58 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>돌림판</title>
 <style>
-  :root {
-    --bg: #f2f4f6; --card: #fff; --text: #191f28; --muted: #8b95a1;
-    --accent: #3182f6; --accent-dark: #1b64da; --line: #e9ecef;
-  }
+  :root { --bg:#f2f4f6; --card:#fff; --text:#191f28; --muted:#8b95a1;
+          --accent:#3182f6; --accent-dark:#1b64da; --line:#e9ecef; }
   * { box-sizing: border-box; }
-  body {
-    margin: 0; min-height: 100vh; background: var(--bg); color: var(--text);
+  body { margin:0; min-height:100vh; background:var(--bg); color:var(--text);
     font-family: Pretendard, -apple-system, "Apple SD Gothic Neo", sans-serif;
-    display: flex; align-items: center; justify-content: center; padding: 28px;
-  }
-  .app { display: flex; gap: 34px; align-items: center; flex-wrap: wrap; justify-content: center; }
-  .wheel-wrap { position: relative; width: min(520px, 88vw); aspect-ratio: 1; }
-  canvas { width: 100%; height: 100%; display: block; }
-  .pointer {
-    position: absolute; top: -6px; left: 50%; transform: translateX(-50%);
-    width: 0; height: 0; border-left: 16px solid transparent; border-right: 16px solid transparent;
-    border-top: 26px solid var(--text); filter: drop-shadow(0 2px 3px rgba(0,0,0,.25)); z-index: 3;
-  }
-  .hub {
-    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
-    width: 112px; height: 112px; border-radius: 50%; cursor: pointer; user-select: none; z-index: 2;
-    border: 5px solid #111;
-    background: linear-gradient(180deg, #ffe066, #ffd43b 55%, #f5b400);
-    box-shadow: 0 7px 0 #111, 0 14px 24px rgba(0,0,0,.28), inset 0 3px 5px rgba(255,255,255,.65);
-    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
-    color: #111; font-weight: 900; font-size: 17px; letter-spacing: -.01em;
-    transition: transform .1s ease, box-shadow .1s ease;
-  }
-  .hub .finger { font-size: 30px; line-height: 1; animation: tap 1.3s ease-in-out infinite; }
-  @keyframes tap { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px) rotate(-8deg) scale(.92); } }
-  .hub:hover { transform: translate(-50%,-50%) scale(1.06); }
-  .hub:active { transform: translate(-50%, calc(-50% + 6px)) scale(1.02); box-shadow: 0 1px 0 #111, 0 4px 10px rgba(0,0,0,.3), inset 0 3px 5px rgba(255,255,255,.65); }
-  .hub:disabled { filter: grayscale(.6); opacity: .75; cursor: default; }
-  .hub:disabled .finger { animation: none; }
-  .panel { width: min(380px, 88vw); background: var(--card); border-radius: 24px; padding: 26px; box-shadow: 0 10px 34px rgba(0,0,0,.08); }
-  h1 { margin: 0 0 4px; font-size: 22px; letter-spacing: -.02em; }
-  .sub { margin: 0 0 16px; color: var(--muted); font-size: 13px; line-height: 1.5; }
-  .input-row { display: flex; gap: 8px; }
-  .input-row input {
-    flex: 1; border: 1.5px solid var(--line); border-radius: 12px; padding: 12px 14px;
-    font: inherit; font-size: 14.5px; outline: none; transition: border-color .15s; min-width: 0;
-  }
-  .input-row input:focus { border-color: var(--accent); }
-  .result {
-    margin-top: 14px; padding: 16px; border-radius: 16px; background: var(--bg);
-    text-align: center; min-height: 62px; display: grid; place-items: center;
-  }
-  .result .who { font-size: 22px; font-weight: 800; letter-spacing: -.02em; }
-  .result .hint { color: var(--muted); font-size: 13px; }
-  .result.win { background: #fff7e0; animation: pop .35s ease; }
-  @keyframes pop { 0% { transform: scale(.92); } 60% { transform: scale(1.04); } 100% { transform: scale(1); } }
-  .btn {
-    width: 100%; margin-top: 14px; padding: 14px; border: 0; border-radius: 13px;
-    font-weight: 800; font-size: 15px; cursor: pointer; background: var(--accent); color: #fff;
-    transition: transform .1s ease, opacity .15s;
-  }
-  .btn:active { transform: scale(.97); }
-  .btn:disabled { opacity: .45; cursor: default; }
-  .foot { margin-top: 12px; font-size: 11.5px; color: var(--muted); text-align: center; }
-
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; }
-  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px;
-    background: var(--bg); border-radius: 999px; font-size: 13px; font-weight: 600; }
-  .chip .dot { width: 9px; height: 9px; border-radius: 50%; }
-  .chip .pct { color: var(--muted); font-weight: 700; font-size: 11.5px; }
+    display:flex; align-items:center; justify-content:center; padding:28px; }
+  .app { display:flex; gap:34px; align-items:center; flex-wrap:wrap; justify-content:center; }
+  .wheel-wrap { position:relative; width:min(520px,88vw); aspect-ratio:1; }
+  canvas { width:100%; height:100%; display:block; }
+  .pointer { position:absolute; top:-6px; left:50%; transform:translateX(-50%);
+    width:0; height:0; border-left:16px solid transparent; border-right:16px solid transparent;
+    border-top:26px solid var(--text); filter:drop-shadow(0 2px 3px rgba(0,0,0,.25)); z-index:3; }
+  .hub { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+    width:112px; height:112px; border-radius:50%; cursor:pointer; user-select:none; z-index:2;
+    border:5px solid #111;
+    background:linear-gradient(180deg,#ffe066,#ffd43b 55%,#f5b400);
+    box-shadow:0 7px 0 #111, 0 14px 24px rgba(0,0,0,.28), inset 0 3px 5px rgba(255,255,255,.65);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px;
+    color:#111; font-weight:900; font-size:17px;
+    transition:transform .1s ease, box-shadow .1s ease; }
+  .hub .finger { font-size:30px; line-height:1; animation:tap 1.3s ease-in-out infinite; }
+  @keyframes tap { 0%,100%{transform:translateY(0);} 50%{transform:translateY(4px) rotate(-8deg) scale(.92);} }
+  .hub:hover { transform:translate(-50%,-50%) scale(1.06); }
+  .hub:active { transform:translate(-50%,calc(-50% + 6px)) scale(1.02);
+    box-shadow:0 1px 0 #111, 0 4px 10px rgba(0,0,0,.3), inset 0 3px 5px rgba(255,255,255,.65); }
+  .hub:disabled { filter:grayscale(.6); opacity:.75; cursor:default; }
+  .hub:disabled .finger { animation:none; }
+  .panel { width:min(380px,88vw); background:var(--card); border-radius:24px; padding:26px;
+    box-shadow:0 10px 34px rgba(0,0,0,.08); }
+  h1 { margin:0 0 4px; font-size:22px; letter-spacing:-.02em; }
+  .sub { margin:0 0 16px; color:var(--muted); font-size:13px; line-height:1.5; }
+  .input-row { display:flex; gap:8px; }
+  .input-row input { flex:1; border:1.5px solid var(--line); border-radius:12px; padding:12px 14px;
+    font:inherit; font-size:14.5px; outline:none; transition:border-color .15s; min-width:0; }
+  .input-row input:focus { border-color:var(--accent); }
+  .result { margin-top:14px; padding:16px; border-radius:16px; background:var(--bg);
+    text-align:center; min-height:62px; display:grid; place-items:center; }
+  .result .who { font-size:22px; font-weight:800; letter-spacing:-.02em; }
+  .result .hint { color:var(--muted); font-size:13px; }
+  .result.win { background:#fff7e0; animation:pop .35s ease; }
+  @keyframes pop { 0%{transform:scale(.92);} 60%{transform:scale(1.04);} 100%{transform:scale(1);} }
+  .btn { width:100%; margin-top:14px; padding:14px; border:0; border-radius:13px;
+    font-weight:800; font-size:15px; cursor:pointer; background:var(--accent); color:#fff;
+    transition:transform .1s ease, opacity .15s; }
+  .btn:active { transform:scale(.97); }
+  .btn:disabled { opacity:.45; cursor:default; }
+  .foot { margin-top:12px; font-size:11.5px; color:var(--muted); text-align:center; }
+  .chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:16px; }
+  .chip { display:inline-flex; align-items:center; gap:6px; padding:7px 12px;
+    background:var(--bg); border-radius:999px; font-size:13px; font-weight:600; }
+  .chip .dot { width:9px; height:9px; border-radius:50%; }
+  .chip .pct { color:var(--muted); font-weight:700; font-size:11.5px; }
 </style>
 </head>
 <body>
@@ -84,7 +71,7 @@
   </div>
   <section class="panel">
     <h1>돌림판 🎡</h1>
-    <p class="sub">같은 이름은 <b>하루에 한 가지 결과</b>만 나와요 — 다시 돌려도 소용없음! 🔒</p>
+    <p class="sub">이름을 넣고 돌려보세요. <b>결과는 주최자에게 기록</b>돼요 — 여러 번 돌리면 다 보입니다 👀</p>
     <div class="chips" id="chips"></div>
     <div class="input-row">
       <input id="player-input" type="text" placeholder="이름을 입력하세요 (필수)" maxlength="12">
@@ -99,6 +86,7 @@
 (function () {
   const ITEMS_URL = 'https://raw.githubusercontent.com/powerPilferer/wheel/main/items.json';
   const API_URL = 'https://api.github.com/repos/powerPilferer/wheel/contents/items.json';
+  const LOG_URL = 'https://script.google.com/macros/s/AKfycbzWsmBMNm6Ccg12sPyPOD8Fpfs6PCDkNGgj-kd1OWltHLswAK0fBq-norUbvPTTp18xYg/exec';
   const chipsEl = document.getElementById('chips');
 
   const PALETTE = ['#3182f6','#ff6b6b','#20c997','#f2a33c','#845ef7','#f06595',
@@ -113,7 +101,6 @@
   let items = [];        // [{name, w}]
   let angle = 0;
   let spinning = false;
-  let round = 1;         // 회차 — 주최자가 리셋하면 올라가고, 결과가 전부 새로 뽑힘
 
   function normalize(arr) {
     return (arr || []).map(x =>
@@ -127,18 +114,15 @@
     return PALETTE[i % PALETTE.length];
   }
   function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    return s.replace(/[&<>"']/g, c => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
   }
-
-  // 누적 시작각 (rad, 12시 기준 회전 전)
   function arcs() {
     const tw = totalW();
     let acc = 0;
     return items.map(x => {
       const start = acc / tw * Math.PI * 2;
       acc += x.w;
-      const end = acc / tw * Math.PI * 2;
-      return [start, end];
+      return [start, acc / tw * Math.PI * 2];
     });
   }
 
@@ -154,22 +138,13 @@
     for (let i = 0; i < n; i++) {
       const a0 = angle + A[i][0] - Math.PI / 2;
       const a1 = angle + A[i][1] - Math.PI / 2;
-      ctx.beginPath();
-      ctx.moveTo(CX, CY);
-      ctx.arc(CX, CY, R, a0, a1);
-      ctx.closePath();
+      ctx.beginPath(); ctx.moveTo(CX, CY); ctx.arc(CX, CY, R, a0, a1); ctx.closePath();
       ctx.fillStyle = n === 1 ? PALETTE[0] : colorOf(i, n);
       ctx.fill();
-      ctx.strokeStyle = 'rgba(255,255,255,.9)';
-      ctx.lineWidth = 3;
-      ctx.stroke();
-
+      ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 3; ctx.stroke();
       ctx.save();
-      ctx.translate(CX, CY);
-      ctx.rotate((a0 + a1) / 2);
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'middle';
-      ctx.fillStyle = '#fff';
+      ctx.translate(CX, CY); ctx.rotate((a0 + a1) / 2);
+      ctx.textAlign = 'right'; ctx.textBaseline = 'middle'; ctx.fillStyle = '#fff';
       const label = items[i].name.length > 10 ? items[i].name.slice(0, 10) + '…' : items[i].name;
       const segFrac = (A[i][1] - A[i][0]) / (Math.PI * 2);
       const fs = Math.min(44, Math.max(16, Math.min(340 / Math.max(label.length, 4), 300 * segFrac * items.length / 2)));
@@ -180,6 +155,7 @@
     }
     ctx.beginPath(); ctx.arc(CX, CY, R + 6, 0, Math.PI * 2);
     ctx.strokeStyle = '#fff'; ctx.lineWidth = 12; ctx.stroke();
+
   }
 
   function winnerAt(a) {
@@ -189,20 +165,10 @@
     return A.length - 1;
   }
 
-  function fnv1a(str) {
-    let h = 0x811c9dc5;
-    for (let i = 0; i < str.length; i++) {
-      h ^= str.charCodeAt(i);
-      h = Math.imul(h, 0x01000193) >>> 0;
-    }
-    return h >>> 0;
-  }
-
   function spin() {
     if (spinning || items.length < 2) return;
     const playerEl = document.getElementById('player-input');
-    const player = playerEl.value.trim().replace(/\s+/g, '').toLowerCase();
-    if (!player) {
+    if (!playerEl.value.trim()) {
       playerEl.focus();
       resultEl.className = 'result';
       resultEl.innerHTML = '<span class="hint">먼저 이름을 넣어주세요!</span>';
@@ -213,23 +179,18 @@
     resultEl.className = 'result';
     resultEl.innerHTML = '<span class="hint">두구두구두구…</span>';
 
-    // 이름+날짜+항목구성(가중치 포함)으로 결정 — 확률은 칸 크기 비율을 따른다
-    const today = new Date().toISOString().slice(0, 10);
-    const seed = fnv1a('r' + round + '|' + player + '|' + today + '|' + items.map(x => x.name + ':' + x.w).join('|'));
-    const u = (seed % 100000) / 100000;                 // 0~1 결정적 난수
+    // 진짜 랜덤 — 확률은 칸 크기 비율을 따름
     const tw = totalW();
-    let pick = u * tw, winIdx = 0;
+    let pick = Math.random() * tw, winIdx = 0;
     for (let i = 0; i < items.length; i++) { pick -= items[i].w; if (pick < 0) { winIdx = i; break; } }
-
     const A = arcs();
-    const frac = 0.15 + ((seed >> 7) % 1000) / 1000 * 0.7;
-    const relTarget = A[winIdx][0] + frac * (A[winIdx][1] - A[winIdx][0]);
+    const relTarget = A[winIdx][0] + (0.15 + Math.random() * 0.7) * (A[winIdx][1] - A[winIdx][0]);
 
     const start = angle;
-    const fullTurns = 6 * Math.PI * 2;
-    let delta = ((-relTarget - start) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
+    const fullTurns = (5 + Math.floor(Math.random() * 3)) * Math.PI * 2;
+    const delta = ((-relTarget - start) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2);
     const target = start + fullTurns + delta;
-    const dur = 4200 + (seed % 700);
+    const dur = 4200 + Math.random() * 800;
     const t0 = performance.now();
 
     function frame(t) {
@@ -237,16 +198,19 @@
       const ease = 1 - Math.pow(1 - p, 3);
       angle = start + (target - start) * ease;
       draw();
-      if (p < 1) {
-        requestAnimationFrame(frame);
-      } else {
-        spinning = false;
-        const idx = winnerAt(angle);
-        resultEl.className = 'result win';
-        resultEl.innerHTML = `<div><div class="who">🎉 ${escapeHtml(playerEl.value.trim())} → ${escapeHtml(items[idx].name)}</div>
-          <div class="hint">오늘은 몇 번을 돌려도 같은 결과예요</div></div>`;
-        setBusy(false);
-      }
+      if (p < 1) { requestAnimationFrame(frame); return; }
+      spinning = false;
+      const idx = winnerAt(angle);
+      resultEl.className = 'result win';
+      resultEl.innerHTML = `<div><div class="who">🎉 ${escapeHtml(playerEl.value.trim())} → ${escapeHtml(items[idx].name)}</div>
+        <div class="hint">기록에 남았어요 👀</div></div>`;
+      setBusy(false);
+
+        // 기록 전송 (구글시트) — 실패해도 게임엔 지장 없음
+        fetch(LOG_URL, { method: 'POST', mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({ name: playerEl.value.trim(), result: items[idx].name }) }).catch(() => {});
+
     }
     requestAnimationFrame(frame);
   }
@@ -260,26 +224,18 @@
     spinBtn.disabled = b || !ok;
     hubBtn.disabled = b || !ok;
   }
-
   function renderChips() {
     const tw = totalW();
     const uneven = items.some(x => x.w !== items[0].w);
     chipsEl.innerHTML = items.map((x, i) =>
       `<span class="chip"><span class="dot" style="background:${colorOf(i, items.length)}"></span>${escapeHtml(x.name)}${
-        uneven ? `<span class="pct">${Math.round(x.w / tw * 100)}%</span>` : ''}</span>`
-    ).join('');
+        uneven ? `<span class="pct">${Math.round(x.w / tw * 100)}%</span>` : ''}</span>`).join('');
     setBusy(false);
   }
-
   let lastApiCall = 0;
-  function applyItems(next, r) {
+  function applyItems(next) {
     next = normalize(next);
-    const nr = Math.max(1, Math.round(Number(r) || 1));
-    if (JSON.stringify(next) !== JSON.stringify(items) || nr !== round) {
-      items = next;
-      round = nr;
-      renderChips(); draw();
-    }
+    if (JSON.stringify(next) !== JSON.stringify(items)) { items = next; renderChips(); draw(); }
   }
   function loadItems(fresh, silent) {
     const now = Date.now();
@@ -288,12 +244,11 @@
     const req = useApi
       ? fetch(API_URL, { headers: { Accept: 'application/vnd.github.raw' }, cache: 'no-store' })
       : fetch(ITEMS_URL + '?t=' + now, { cache: 'no-store' });
-    return req
-      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(d => applyItems(d.items, d.round))
+    return req.then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(d => applyItems(d.items))
       .catch(() => {
         if (useApi) return fetch(ITEMS_URL + '?t=' + Date.now(), { cache: 'no-store' })
-          .then(r => r.json()).then(d => applyItems(d.items, d.round)).catch(() => {});
+          .then(r => r.json()).then(d => applyItems(d.items)).catch(() => {});
         if (!silent) resultEl.innerHTML = '<span class="hint">항목을 불러오지 못했어요. 새로고침 해보세요.</span>';
       });
   }
