@@ -266,7 +266,7 @@
   loadItems(false);
   // 탭으로 돌아오면 + 60초마다 자동 갱신 (돌아가는 중엔 건너뜀)
   document.addEventListener('visibilitychange', () => { if (!document.hidden && !spinning) loadItems(true); });
-  setInterval(() => { if (!spinning) loadItems(true); }, 60000);
+  setInterval(() => { if (!spinning) loadItems(true); }, 20000);
   draw();
 })();
 </script>
