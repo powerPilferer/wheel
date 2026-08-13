@@ -248,13 +248,25 @@
   hubBtn.addEventListener('click', spin);
   document.getElementById('player-input').addEventListener('keydown', e => { if (e.key === 'Enter') spin(); });
 
-  // 항목은 관리자가 저장한 items.json에서 (캐시 무효화 파라미터로 항상 최신)
-  fetch(ITEMS_URL + '?t=' + Date.now())
-    .then(r => r.json())
-    .then(d => { items = (d.items || []).filter(Boolean); renderChips(); draw(); })
-    .catch(() => {
-      resultEl.innerHTML = '<span class="hint">항목을 불러오지 못했어요. 새로고침 해보세요.</span>';
-    });
+  // 항목 로딩 — CDN 캐시를 피해 항상 최신을 받아온다
+  function loadItems(silent) {
+    return fetch(ITEMS_URL + '?t=' + Date.now(), { cache: 'no-store' })
+      .then(r => r.json())
+      .then(d => {
+        const next = (d.items || []).filter(Boolean);
+        if (JSON.stringify(next) !== JSON.stringify(items)) {
+          items = next;
+          renderChips(); draw();
+        }
+      })
+      .catch(() => {
+        if (!silent) resultEl.innerHTML = '<span class="hint">항목을 불러오지 못했어요. 새로고침 해보세요.</span>';
+      });
+  }
+  loadItems(false);
+  // 탭으로 돌아오면 + 60초마다 자동 갱신 (돌아가는 중엔 건너뜀)
+  document.addEventListener('visibilitychange', () => { if (!document.hidden && !spinning) loadItems(true); });
+  setInterval(() => { if (!spinning) loadItems(true); }, 60000);
   draw();
 })();
 </script>
