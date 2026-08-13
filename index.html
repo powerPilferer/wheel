@@ -113,6 +113,7 @@
   let items = [];        // [{name, w}]
   let angle = 0;
   let spinning = false;
+  let round = 1;         // 회차 — 주최자가 리셋하면 올라가고, 결과가 전부 새로 뽑힘
 
   function normalize(arr) {
     return (arr || []).map(x =>
@@ -214,7 +215,7 @@
 
     // 이름+날짜+항목구성(가중치 포함)으로 결정 — 확률은 칸 크기 비율을 따른다
     const today = new Date().toISOString().slice(0, 10);
-    const seed = fnv1a(player + '|' + today + '|' + items.map(x => x.name + ':' + x.w).join('|'));
+    const seed = fnv1a('r' + round + '|' + player + '|' + today + '|' + items.map(x => x.name + ':' + x.w).join('|'));
     const u = (seed % 100000) / 100000;                 // 0~1 결정적 난수
     const tw = totalW();
     let pick = u * tw, winIdx = 0;
@@ -271,10 +272,12 @@
   }
 
   let lastApiCall = 0;
-  function applyItems(next) {
+  function applyItems(next, r) {
     next = normalize(next);
-    if (JSON.stringify(next) !== JSON.stringify(items)) {
+    const nr = Math.max(1, Math.round(Number(r) || 1));
+    if (JSON.stringify(next) !== JSON.stringify(items) || nr !== round) {
       items = next;
+      round = nr;
       renderChips(); draw();
     }
   }
@@ -287,10 +290,10 @@
       : fetch(ITEMS_URL + '?t=' + now, { cache: 'no-store' });
     return req
       .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(d => applyItems(d.items))
+      .then(d => applyItems(d.items, d.round))
       .catch(() => {
         if (useApi) return fetch(ITEMS_URL + '?t=' + Date.now(), { cache: 'no-store' })
-          .then(r => r.json()).then(d => applyItems(d.items)).catch(() => {});
+          .then(r => r.json()).then(d => applyItems(d.items, d.round)).catch(() => {});
         if (!silent) resultEl.innerHTML = '<span class="hint">항목을 불러오지 못했어요. 새로고침 해보세요.</span>';
       });
   }
